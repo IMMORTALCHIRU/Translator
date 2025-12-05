@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block title %}GenZ Slang Translator{% endblock %}
+
+{% block content %}
+<div class="translate-page genz-page">
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="las la-comments"></i> GenZ Slang Translator</h1>
+            <p>Translate GenZ slang to English and vice versa • Speak or type your text</p>
+        </div>
+        
+        <div class="translate-container">
+            <!-- Translation Mode Selector -->
+            <div class="mode-selector">
+                <button class="mode-btn active" data-mode="auto">
+                    <i class="las la-magic"></i> Auto Detect
+                </button>
+                <button class="mode-btn" data-mode="to_english">
+                    <i class="las la-arrow-right"></i> GenZ → English
+                </button>
+                <button class="mode-btn" data-mode="to_genz">
+                    <i class="las la-arrow-left"></i> English → GenZ
+                </button>
+            </div>
+            
+            <!-- Input Methods -->
+            <div class="input-methods">
+                <div class="method-tabs">
+                    <button class="method-tab active" data-method="text">
+                        <i class="las la-keyboard"></i> Text Input
+                    </button>
+                    <button class="method-tab" data-method="record">
+                        <i class="las la-microphone"></i> Record Audio
+                    </button>
+                </div>
+                
+                <!-- Text Input Method -->
+                <div class="method-content active" id="textMethod">
+                    <div class="text-input-area">
+                        <textarea 
+                            id="inputText" 
+                            class="form-control text-input" 
+                            placeholder="Type your GenZ slang here... e.g., 'That party was lit, no cap!'"
+                            rows="6"></textarea>
+                        <div class="input-info">
+                            <span class="char-count"><span id="charCount">0</span>/500</span>
+                            <button class="btn-icon" onclick="clearTextInput()" title="Clear">
+                                <i class="las la-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Upload option removed -->
+                
+                <!-- Record Audio Method -->
+                <div class="method-content" id="recordMethod">
+                    <div class="record-area">
+                        <div class="record-visualizer">
+                            <div class="pulse-ring"></div>
+                            <button class="record-button" id="recordButton">
+                                <i class="las la-microphone"></i>
+                            </button>
+                        </div>
+                        <p class="record-status" id="recordStatus">Click to start recording</p>
+                        <p class="record-timer" id="recordTimer">00:00</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Translate Button -->
+            <button class="btn btn-primary btn-lg btn-block" id="translateButton">
+                <i class="las la-language"></i> Translate
+                <span class="spinner" id="translateSpinner" style="display: none;"></span>
+            </button>
+            
+            <!-- Results Section -->
+            <div class="translation-results genz-results" id="results" style="display: none;">
+                <!-- Original Input -->
+                <div class="result-card">
+                    <div class="result-header">
+                        <h3><i class="las la-microphone-alt"></i> Original Text</h3>
+                        <button class="btn-icon" onclick="copyText('originalText')">
+                            <i class="las la-copy"></i>
+                        </button>
+                    </div>
+                    <p class="result-text" id="originalText"></p>
+                </div>
+                
+                <div class="result-arrow">
+                    <i class="las la-arrow-down"></i>
+                </div>
+                
+                <!-- Translated Output -->
+                <div class="result-card result-translated">
+                    <div class="result-header">
+                        <h3><i class="las la-language"></i> Translated Text</h3>
+                        <div class="result-actions">
+                            <button class="btn-icon" onclick="speakText()" title="Listen">
+                                <i class="las la-volume-up"></i>
+                            </button>
+                            <button class="btn-icon" onclick="copyText('translatedText')" title="Copy">
+                                <i class="las la-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="result-text" id="translatedText"></p>
+                </div>
+                
+                <!-- Slang Explanations -->
+                <div class="result-card slang-explanations" id="explanationsCard" style="display: none;">
+                    <div class="result-header">
+                        <h3><i class="las la-info-circle"></i> Slang Explanations</h3>
+                    </div>
+                    <div class="explanations-list" id="explanationsList"></div>
+                </div>
+            </div>
+            
+            <!-- Slang Dictionary Quick Reference -->
+            <div class="slang-reference">
+                <button class="btn btn-outline" onclick="toggleSlangDictionary()">
+                    <i class="las la-book"></i> View Slang Dictionary
+                </button>
+            </div>
+        </div>
+        
+        <!-- Slang Dictionary Modal -->
+        <div class="modal" id="slangDictionaryModal" style="display: none;">
+            <div class="modal-content modal-large">
+                <div class="modal-header">
+                    <h2><i class="las la-book"></i> GenZ Slang Dictionary</h2>
+                    <button class="modal-close" onclick="toggleSlangDictionary()">
+                        <i class="las la-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="search-box">
+                        <i class="las la-search"></i>
+                        <input 
+                            type="text" 
+                            id="slangSearch" 
+                            placeholder="Search for slang..." 
+                            class="form-control"
+                            oninput="searchSlang()">
+                    </div>
+                    <div class="slang-list" id="slangList">
+                        <p class="loading-text">Loading dictionary...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/genz_translation.js') }}"></script>
+{% endblock %}

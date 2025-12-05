@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block title %}Home - GenZ Translator{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="animate-slide-up">
+                    <span class="gradient-text">Speak Any Language</span><br>
+                    Instantly
+                </h1>
+                <p class="hero-subtitle animate-slide-up" style="animation-delay: 0.2s;">
+                    Real-time speech-to-speech translation powered by AI. 
+                    Breaking language barriers, one conversation at a time.
+                </p>
+                <div class="hero-buttons animate-slide-up" style="animation-delay: 0.4s;">
+                    {% if not session.get('user_id') %}
+                        <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg">
+                            <i class="las la-rocket"></i> Get Started
+                        </a>
+                        <a href="#about" class="btn btn-outline btn-lg">
+                            <i class="las la-info-circle"></i> Learn More
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('main.translate') }}" class="btn btn-primary btn-lg">
+                            <i class="las la-microphone"></i> Start Translating
+                        </a>
+                        <a href="{{ url_for('translation.history') }}" class="btn btn-outline btn-lg">
+                            <i class="las la-history"></i> View History
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="hero-image animate-fade-in" style="animation-delay: 0.6s;">
+                <div class="floating-card">
+                    <i class="las la-microphone-alt"></i>
+                </div>
+                <div class="floating-card" style="animation-delay: 0.2s;">
+                    <i class="las la-language"></i>
+                </div>
+                <div class="floating-card" style="animation-delay: 0.4s;">
+                    <i class="las la-volume-up"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<section class="features-section" id="features">
+    <div class="container">
+        <h2 class="section-title">Powerful Features</h2>
+        <p class="section-subtitle">Everything you need for seamless communication</p>
+        
+        <div class="features-grid">
+            <div class="feature-card animate-fade-in">
+                <div class="feature-icon">
+                    <i class="las la-bolt"></i>
+                </div>
+                <h3>Real-Time Translation</h3>
+                <p>Instant speech-to-speech translation with minimal latency</p>
+            </div>
+            
+            <div class="feature-card animate-fade-in" style="animation-delay: 0.1s;">
+                <div class="feature-icon">
+                    <i class="las la-brain"></i>
+                </div>
+                <h3>AI-Powered</h3>
+                <p>Leveraging OpenAI Whisper and HuggingFace Transformers</p>
+            </div>
+            
+            <div class="feature-card animate-fade-in" style="animation-delay: 0.2s;">
+                <div class="feature-icon">
+                    <i class="las la-lock"></i>
+                </div>
+                <h3>100% Private</h3>
+                <p>All processing happens locally. Your data never leaves your device</p>
+            </div>
+            
+            <div class="feature-card animate-fade-in" style="animation-delay: 0.3s;">
+                <div class="feature-icon">
+                    <i class="las la-globe"></i>
+                </div>
+                <h3>Multi-Language</h3>
+                <p>Support for 10+ languages including French, Spanish, German & more</p>
+            </div>
+            
+            <div class="feature-card animate-fade-in" style="animation-delay: 0.4s;">
+                <div class="feature-icon">
+                    <i class="las la-comments"></i>
+                </div>
+                <h3>GenZ Slang Support</h3>
+                <p>Understands modern slang like "rizz", "sus", "bet", "no cap"</p>
+            </div>
+            
+            <div class="feature-card animate-fade-in" style="animation-delay: 0.5s;">
+                <div class="feature-icon">
+                    <i class="las la-code"></i>
+                </div>
+                <h3>Open Source</h3>
+                <p>Built entirely with free and open-source technologies</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="about-section" id="about">
+    <div class="container">
+        <div class="about-content">
+            <div class="about-text">
+                <h2 class="section-title">About GenZ Translator</h2>
+                <p>
+                    GenZ Translator is a cutting-edge, real-time speech-to-speech translation system 
+                    built entirely with free and open-source Python libraries. Our mission is to make 
+                    communication effortless, regardless of language barriers.
+                </p>
+                <p>
+                    What sets us apart is our understanding of modern language. We don't just translate 
+                    formal text – we understand slang, idioms, and the way people actually speak. 
+                    Whether you're saying "that's cap" or "this slaps", our AI gets it.
+                </p>
+                
+                <div class="tech-stack">
+                    <h3>Powered By</h3>
+                    <div class="tech-badges">
+                        <span class="tech-badge">
+                            <i class="las la-microphone"></i> OpenAI Whisper
+                        </span>
+                        <span class="tech-badge">
+                            <i class="las la-brain"></i> HuggingFace Transformers
+                        </span>
+                        <span class="tech-badge">
+                            <i class="las la-server"></i> Flask
+                        </span>
+                        <span class="tech-badge">
+                            <i class="las la-database"></i> MongoDB
+                        </span>
+                        <span class="tech-badge">
+                            <i class="las la-volume-up"></i> pyttsx3
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="about-stats">
+                <div class="stat-card">
+                    <i class="las la-language"></i>
+                    <h3>10+</h3>
+                    <p>Languages Supported</p>
+                </div>
+                <div class="stat-card">
+                    <i class="las la-bolt"></i>
+                    <h3>< 2s</h3>
+                    <p>Average Translation Time</p>
+                </div>
+                <div class="stat-card">
+                    <i class="las la-shield-alt"></i>
+                    <h3>100%</h3>
+                    <p>Privacy Guaranteed</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- GenZ Language Section -->
+<section class="genz-section">
+    <div class="container">
+        <h2 class="section-title">We Speak Your Language</h2>
+        <p class="section-subtitle">Understanding modern slang and expressions</p>
+        
+        <div class="slang-grid">
+            <div class="slang-card">
+                <div class="slang-term">🔥 Rizz</div>
+                <div class="slang-meaning">Charisma or charm</div>
+            </div>
+            <div class="slang-card">
+                <div class="slang-term">😎 No Cap</div>
+                <div class="slang-meaning">No lie, for real</div>
+            </div>
+            <div class="slang-card">
+                <div class="slang-term">👀 Sus</div>
+                <div class="slang-meaning">Suspicious</div>
+            </div>
+            <div class="slang-card">
+                <div class="slang-term">💯 Bet</div>
+                <div class="slang-meaning">Okay, sure, sounds good</div>
+            </div>
+            <div class="slang-card">
+                <div class="slang-term">🎵 Slaps</div>
+                <div class="slang-meaning">Really good (usually music)</div>
+            </div>
+            <div class="slang-card">
+                <div class="slang-term">😤 Cap</div>
+                <div class="slang-meaning">Lie, false</div>
+            </div>
+        </div>
+        
+        <div class="cta-box">
+            <h3>Ready to break language barriers?</h3>
+            <p>Join thousands of users who are already communicating across languages</p>
+            {% if not session.get('user_id') %}
+                <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg">
+                    <i class="las la-rocket"></i> Start Translating Now
+                </a>
+            {% else %}
+                <a href="{{ url_for('main.translate') }}" class="btn btn-primary btn-lg">
+                    <i class="las la-microphone"></i> Go to Translator
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

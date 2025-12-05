@@ -1,0 +1,14 @@
+Flask
+flask-pymongo
+pymongo
+werkzeug
+openai-whisper
+torch
+sounddevice
+numpy
+scipy
+pyttsx3
+certifi
+googletrans==4.0.0rc1
+sentence-transformers
+soundfile

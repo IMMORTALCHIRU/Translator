@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}Translate - GenZ Translator{% endblock %}
+
+{% block content %}
+<div class="translate-page">
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="las la-microphone"></i> Speech Translator</h1>
+            <p>Type text or record your voice to translate</p>
+        </div>
+        
+        <div class="translate-container">
+            <!-- Language Selection -->
+            <div class="language-selector">
+                <div class="language-box">
+                    <label><i class="las la-flag"></i> Source Language</label>
+                    <div class="language-display">
+                        <img src="https://img.icons8.com/color/48/000000/great-britain.png" alt="English">
+                        <span>English</span>
+                    </div>
+                </div>
+                
+                <div class="language-arrow">
+                    <i class="las la-arrow-right"></i>
+                </div>
+                
+                <div class="language-box">
+                    <label><i class="las la-globe"></i> Target Language</label>
+                    <select id="targetLanguage" class="form-control">
+                        <option value="es">Spanish</option>
+                        <option value="fr">French</option>
+                        <option value="de">German</option>
+                        <option value="it">Italian</option>
+                        <option value="pt">Portuguese</option>
+                        <option value="ru">Russian</option>
+                        <option value="zh">Chinese</option>
+                        <option value="ja">Japanese</option>
+                        <option value="ko">Korean</option>
+                        <option value="ar">Arabic</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Translation Method -->
+            <div class="translation-methods">
+                <div class="method-tabs">
+                    <button class="method-tab active" data-method="text">
+                        <i class="las la-keyboard"></i> Text Input
+                    </button>
+                    <button class="method-tab" data-method="record">
+                        <i class="las la-microphone"></i> Record Audio
+                    </button>
+                </div>
+                
+                <!-- Text Input Method -->
+                <div class="method-content active" id="textMethod">
+                    <div class="text-input-area">
+                        <textarea 
+                            id="inputText" 
+                            class="form-control text-input" 
+                            placeholder="Type your text here... The text will be translated to your target language"
+                            rows="6"></textarea>
+                        <div class="input-info">
+                            <span class="char-count"><span id="charCount">0</span>/1000</span>
+                            <button class="btn-icon" onclick="clearTextInput()" title="Clear">
+                                <i class="las la-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Upload option removed -->
+                
+                <!-- Record Method -->
+                <div class="method-content" id="recordMethod">
+                    <div class="record-area">
+                        <div class="record-visualizer">
+                            <div class="pulse-ring"></div>
+                            <button class="record-button" id="recordButton">
+                                <i class="las la-microphone"></i>
+                            </button>
+                        </div>
+                        <p class="record-status" id="recordStatus">Click to start recording</p>
+                        <p class="record-timer" id="recordTimer">00:00</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Translate Button -->
+            <button class="btn btn-primary btn-lg btn-block" id="translateButton">
+                <i class="las la-language"></i> Translate
+                <span class="spinner" id="translateSpinner" style="display: none;"></span>
+            </button>
+            
+            <!-- Results -->
+            <div class="translation-results" id="results" style="display: none;">
+                <div class="result-card">
+                    <div class="result-header">
+                        <h3><i class="las la-microphone-alt"></i> Original Text</h3>
+                        <button class="btn-icon" onclick="copyText('originalText')">
+                            <i class="las la-copy"></i>
+                        </button>
+                    </div>
+                    <p class="result-text" id="originalText"></p>
+                </div>
+                
+                <div class="result-arrow">
+                    <i class="las la-arrow-down"></i>
+                </div>
+                
+                <div class="result-card result-translated">
+                    <div class="result-header">
+                        <h3><i class="las la-language"></i> Translated Text</h3>
+                        <div class="result-actions">
+                            <button class="btn-icon" onclick="speakText()" title="Listen">
+                                <i class="las la-volume-up"></i>
+                            </button>
+                            <button class="btn-icon" onclick="copyText('translatedText')" title="Copy">
+                                <i class="las la-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="result-text" id="translatedText"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/translation.js') }}"></script>
+{% endblock %}
