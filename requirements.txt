@@ -12,3 +12,6 @@ certifi
 googletrans==4.0.0rc1
 sentence-transformers
 soundfile
+
+# For Windows users to install ffmpeg, use the following command:
+# winget install ffmpeg
