@@ -191,13 +191,27 @@ class SpeechTranslator:
             try:
                 wav_path = self._convert_to_wav16(audio_path)
             except Exception as conv_err:
-                return {'success': False, 'error': str(conv_err)}
+                return {'success': False, 'error': f'Audio conversion failed: {str(conv_err)}'}
 
             if wav_path is None:
                 return {
                     'success': False,
-                    'error': "ffmpeg not found and file is not a WAV/AIFF that can be processed. Install ffmpeg (e.g. `brew install ffmpeg`) or upload a WAV file."
+                    'error': "Audio conversion failed: ffmpeg not found and file is not a WAV/AIFF that can be processed. Install ffmpeg (e.g. `brew install ffmpeg`) or upload a WAV file."
                 }
+
+            # Check if converted file has content
+            import os
+            if not os.path.exists(wav_path) or os.path.getsize(wav_path) < 100:
+                return {'success': False, 'error': 'Converted audio file is empty or too small'}
+
+            # Check audio duration
+            try:
+                rate, data = wavfile.read(wav_path)
+                duration = len(data) / rate if rate > 0 else 0
+                if duration < 0.5:
+                    return {'success': False, 'error': f'Audio too short ({duration:.1f}s). Please record at least 0.5 seconds of speech.'}
+            except Exception as dur_err:
+                return {'success': False, 'error': f'Failed to read audio file: {str(dur_err)}'}
 
             try:
                 result = self.whisper_model.transcribe(wav_path, fp16=use_fp16)
@@ -211,7 +225,7 @@ class SpeechTranslator:
 
             return {
                 'success': True,
-                'text': result['text'].strip(),
+                'text': result['text'].strip() if result['text'] else '',
                 'language': result.get('language', 'en')
             }
         except Exception as e:
@@ -226,6 +240,13 @@ class SpeechTranslator:
     
     def translate_text(self, text, source_lang='en', target_lang='es'):
         try:
+            if text is None:
+                return {'success': False, 'error': 'No text provided for translation'}
+            
+            text = str(text).strip()
+            if not text:
+                return {'success': False, 'error': 'Empty text provided for translation'}
+            
             # A more comprehensive language map for common language codes
             lang_map = {
                 'af': 'af','sq': 'sq','am': 'am','ar': 'ar','hy': 'hy','az': 'az',
@@ -256,7 +277,7 @@ class SpeechTranslator:
 
             return {
                 'success': True,
-                'translated_text': result.text
+                'translated_text': result.text if result and result.text else ''
             }
 
         except Exception as e:
@@ -270,6 +291,15 @@ class SpeechTranslator:
     
     def text_to_speech(self, text, output_path=None):
         try:
+            if text is None:
+                text = ''
+            text = str(text).strip()
+            if not text:
+                return {
+                    'success': False,
+                    'error': 'No text provided for TTS'
+                }
+            
             # Ensure the static audio folder exists and save to a file so the client can fetch it
             if output_path is None:
                 from datetime import datetime

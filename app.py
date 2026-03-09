@@ -1,4 +1,4 @@
-from flask import Flask, session
+from flask import Flask, jsonify, session
 from flask_pymongo import PyMongo
 from config import Config
 from routes.auth import init_auth_routes, login_required
@@ -12,6 +12,8 @@ import certifi
 os.environ.setdefault('SSL_CERT_FILE', certifi.where())
 
 from utils.translator import SpeechTranslator
+from utils.genz_translator import GenZTranslator
+from utils.audio_processor import AudioProcessor
 
 # Create Flask app
 app = Flask(__name__)
@@ -23,19 +25,25 @@ mongo = PyMongo(app)
 # Create upload folder
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
-# Initialize Speech Translator (singleton)
+# Initialize translators and processors (preload models)
 speech_translator = SpeechTranslator()
+genz_translator = GenZTranslator()
+audio_processor = AudioProcessor()
 
 # Register blueprints
 app.register_blueprint(main_bp)
 app.register_blueprint(init_auth_routes(mongo), url_prefix='/auth')
-app.register_blueprint(init_translation_routes(mongo))
-app.register_blueprint(init_genz_routes(mongo))
+app.register_blueprint(init_translation_routes(mongo, speech_translator, audio_processor))
+app.register_blueprint(init_genz_routes(mongo, speech_translator, audio_processor, genz_translator))
 
 # Context processor for templates
 @app.context_processor
 def inject_user():
     return dict(session=session)
+
+@app.errorhandler(500)
+def internal_error(error):
+    return jsonify({'success': False, 'error': 'Internal server error'}), 500
 
 if __name__ == '__main__':
     print("=" * 50)

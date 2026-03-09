@@ -36,7 +36,7 @@ class GenZTranslator:
                 if len(word) > 2:
                     self.english_to_slang.setdefault(word, []).append(slang)
 
-        # Embedding-related state (lazy initialized)
+        # Embedding-related state (preload for faster startup)
         self.embedding_model_name = EMBEDDING_MODEL_NAME
         self._embedding_model = None
         self._embedding_matrix = None
@@ -46,6 +46,13 @@ class GenZTranslator:
             'Loaded %d GenZ slang entries from built-in dataset',
             len(self.slang_to_english)
         )
+
+        # Preload embeddings for faster translation
+        try:
+            self._ensure_embeddings()
+            logging.getLogger(__name__).info('GenZ embedding model preloaded successfully')
+        except Exception as e:
+            logging.getLogger(__name__).warning(f'Failed to preload GenZ embeddings: {e}')
 
     def _ensure_embeddings(self):
         if SentenceTransformer is None:

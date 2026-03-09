@@ -52,6 +52,13 @@ class AudioProcessor:
             # Save file
             file_storage.save(filepath)
             
+            # Verify file was saved and has content
+            if not os.path.exists(filepath) or os.path.getsize(filepath) == 0:
+                return {
+                    'success': False,
+                    'error': 'Failed to save audio file or file is empty'
+                }
+            
             return {
                 'success': True,
                 'path': filepath

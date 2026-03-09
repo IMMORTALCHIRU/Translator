@@ -7,11 +7,8 @@ from utils.genz_translator import GenZTranslator
 
 genz_bp = Blueprint('genz', __name__)
 
-def init_genz_routes(mongo):
+def init_genz_routes(mongo, speech_translator, audio_processor, genz_translator):
     translation_model = Translation(mongo)
-    speech_translator = SpeechTranslator()
-    audio_processor = AudioProcessor()
-    genz_translator = GenZTranslator()
     
     @genz_bp.route('/genz-translate')
     @login_required

@@ -6,10 +6,8 @@ from utils.audio_processor import AudioProcessor
 
 translation_bp = Blueprint('translation', __name__)
 
-def init_translation_routes(mongo):
+def init_translation_routes(mongo, speech_translator, audio_processor):
     translation_model = Translation(mongo)
-    speech_translator = SpeechTranslator()
-    audio_processor = AudioProcessor()
     
     @translation_bp.route('/api/translate', methods=['POST'])
     @login_required
@@ -28,13 +26,22 @@ def init_translation_routes(mongo):
             
             audio_path = save_result['path']
             
+            # Check if audio file has content
+            import os
+            if not os.path.exists(audio_path) or os.path.getsize(audio_path) < 100:  # Minimum size for a valid audio file
+                return jsonify({'success': False, 'error': 'Audio file is empty or too small'}), 400
+            
             # Transcribe audio to text
             transcription_result = speech_translator.transcribe_audio(audio_path)
             if not transcription_result['success']:
                 return jsonify(transcription_result), 500
             
-            original_text = transcription_result['text']
-            source_lang = transcription_result.get('language', 'en')
+            original_text = transcription_result.get('text', '').strip()
+            
+            if not original_text:
+                return jsonify({'success': False, 'error': 'No speech detected in the audio file'}), 400
+            
+            source_lang = transcription_result.get('language', 'en') or 'en'
             
             # Translate text
             translation_result = speech_translator.translate_text(
@@ -46,10 +53,10 @@ def init_translation_routes(mongo):
             if not translation_result['success']:
                 return jsonify(translation_result), 500
             
-            translated_text = translation_result['translated_text']
+            translated_text = translation_result.get('translated_text', '').strip()
             # Generate TTS for the translated text so client can play audio
             tts_result = speech_translator.text_to_speech(translated_text)
-            tts_url = tts_result.get('url') if tts_result.get('success') else None
+            tts_url = tts_result.get('url') if tts_result and tts_result.get('success') else None
 
             # Save to database
             translation_model.save_translation(
@@ -96,11 +103,11 @@ def init_translation_routes(mongo):
             if not translation_result['success']:
                 return jsonify(translation_result), 500
             
-            translated_text = translation_result['translated_text']
+            translated_text = translation_result.get('translated_text', '').strip()
 
             # Generate TTS for the translated text
             tts_result = speech_translator.text_to_speech(translated_text)
-            tts_url = tts_result.get('url') if tts_result.get('success') else None
+            tts_url = tts_result.get('url') if tts_result and tts_result.get('success') else None
             
             # Save to database
             translation_model.save_translation(
